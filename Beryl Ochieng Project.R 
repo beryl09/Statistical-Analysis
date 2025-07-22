@@ -1,0 +1,19 @@
+library(readxl)
+library(ggplot2)
+library(dplyr)
+subvalues_2_F <- read_excel("Desktop/Projects /Stat Methods folder/subvalues_2_F.xlsx")
+
+anova_model <- aov(violence ~ race +age + male + race:age + age:male, data = subvalues_2_F)
+
+summary_text <- capture.output(summary(anova_model))
+writeLines(summary_text, "anova_results.txt")
+
+
+ggplot(subvalues_2_F, aes(x = age, y = violence, color = male, group = male)) +
+  stat_summary(fun = mean, geom = "line", size = 1.2) +
+  stat_summary(fun = mean, geom = "point", size = 2.5) +
+  labs(title = "Interaction Plot: Age and Gender on Violence",
+       x = "Age", y = "Mean Violence Score", color = "Male") +
+  theme_minimal()
+
+ggsave("interaction_plot_age_male.png", width = 8, height = 5)
